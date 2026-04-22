@@ -3,6 +3,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 using namespace std;
 
@@ -79,9 +80,30 @@ bool CampusCompass::ParseCSV(const string &edges_filepath, const string &classes
 bool CampusCompass::ParseCommand(const string &command) {
     // do whatever regex you need to parse validity
     // hint: return a boolean for validation when testing. For example:
-    bool is_valid = true; // replace with your actual validity checking
+    if (command.empty()) {
+        cout << "unsuccessful" << endl;
+        return false;
+    }
 
-    return is_valid;
+    stringstream ss(command);
+    string input;
+    ss >> input;
+
+    if (input == "insert") insert(command);
+    else if (input == "remove") remove(ss);
+    else if (input == "dropClass") dropClass(ss);
+    else if (input == "replaceClass") replaceClass(ss);
+    else if (input == "removeClass") removeClass(ss);
+    else if (input == "toggleEdgesClosure") toggleEdgesClosure(ss);
+    else if (input == "checkEdgeStatus") checkEdgeStatus(ss);
+    else if (input == "isConnected") isConnected(ss);
+    else if (input == "printShortestEdges") printShortestEdges(ss);
+    else if (input == "printStudentZone") printStudentZone(ss);
+    else {
+        cout << "unsuccessful" << endl;
+        return false;
+    }
+    return true;
 }
 
 bool CampusCompass::isValidStudentId(const string &s) {
