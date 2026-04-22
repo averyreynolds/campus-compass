@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <queue>
 
 using namespace std;
 
@@ -136,4 +137,39 @@ bool CampusCompass::isValidClassCode(const string &s) {
 bool CampusCompass::locationExists(int id) const {
     if (locationIds.count(id) > 0) return true;
     return false;
+}
+
+pair<unordered_map<int, int>, unordered_map<int, int> > CampusCompass::dijkstra(int src) const {
+    unordered_map<int, int> dist, prev;
+    for (int id : locationIds) {
+        dist[id] = INT_MAX;
+        prev[id] = -1;
+    }
+    dist[src] = 0;
+
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+    pq.emplace(0, src);
+
+    while (!pq.empty()) {
+        auto [d, u] = pq.top();
+        pq.pop();
+
+        if (d > dist[u]) continue;
+
+        auto it = adjList.find(u);
+        if (it == adjList.end()) continue;
+
+        for (const Edge& e : it->second) {
+            if (e.closed) continue;
+            int v = e.to;
+            int newDist = dist[u] + e.weight;
+            if (newDist < dist[v]) {
+                dist[v] = newDist;
+                prev[v] = u;
+                pq.emplace(dist[v], v);
+            }
+        }
+    }
+    
+    return {dist, prev};
 }
