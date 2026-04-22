@@ -170,6 +170,60 @@ pair<unordered_map<int, int>, unordered_map<int, int> > CampusCompass::dijkstra(
             }
         }
     }
-    
+
     return {dist, prev};
+}
+
+vector<int> CampusCompass::reconstructPath(int src, int dest, const unordered_map<int, int> &prev) const {
+    vector<int> path;
+    int curr = dest;
+    while (curr != -1) {
+        path.push_back(curr);
+        auto it = prev.find(curr);
+        if (it == prev.end()) break;
+        curr = it->second;
+    }
+    reverse(path.begin(), path.end());
+    if (path.empty() || path[0] != src) return {};
+    return path;
+}
+
+int CampusCompass::primMST(const set<int> &nodes, const unordered_map<int, int>& subgraph) const {
+    if (nodes.empty()) return 0;
+
+    unordered_map<int, int> key;
+    unordered_map<int, bool> included;
+    for (int n : nodes) {
+        key[n] = INT_MAX;
+        included[n] = false;
+    }
+
+    int start = *nodes.begin();
+    key[start];
+
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+    pq.emplace(0, start);
+
+    int total = 0;
+    while (!pq.empty()) {
+        auto [w, u] = pq.top();
+        pq.pop();
+
+        if (included[u]) continue;
+        included[u] = true;
+        total += w;
+
+        auto it = subgraph.find(u);
+        if (it == subgraph.end()) continue;
+
+        for (Edge& e : it->second) {
+            int v = e.to;
+            if (nodes.count(v) && !included[v] && e.weight < key[v]) {
+                key[v] = e.weight;
+                pq.push({e.weight, v});
+            }
+        }
+
+    }
+    return total;
 }

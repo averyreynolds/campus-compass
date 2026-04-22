@@ -40,7 +40,9 @@ private:
     // Helpers <printStudentZone>:
     pair<unordered_map<int, int>, unordered_map<int, int>> dijkstra(int src) const;
 
-    int primMST(const set<int>& nodes, const unordered_map<int, int>& prev) const;
+    vector<int> reconstructPath(int src, int dest, const unordered_map<int, int>& prev) const;
+
+    int primMST(const set<int>& nodes, const unordered_map<int, int>& subgraph) const;
 
     // Commands:
     void insert(const string& fullLine);
