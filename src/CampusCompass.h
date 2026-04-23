@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <map>
 #include <set>
+#include <unordered_map>
 
 using namespace std;
 
@@ -27,6 +27,7 @@ private:
     unordered_map<int, vector<Edge>> adjList;
     set<int> locationIds;
     unordered_map<int, string> studentList;
+    unordered_map<int, Student> students;
 
     // if doing EC
     unordered_map<string, int> classLocations;
@@ -42,7 +43,7 @@ private:
 
     vector<int> reconstructPath(int src, int dest, const unordered_map<int, int>& prev) const;
 
-    int primMST(const set<int>& nodes, const unordered_map<int, int>& subgraph) const;
+    int primMST(const set<int>& nodes, const unordered_map<int, vector<Edge>>& subgraph) const;
 
     // Commands:
     void insert(const string& fullLine);
